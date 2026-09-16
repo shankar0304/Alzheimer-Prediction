@@ -1,4 +1,4 @@
-import streamlit as st
+
 import pandas as pd
 import joblib
 from datetime import datetime
@@ -595,7 +595,6 @@ if page == "Prediction":
     left, right = st.columns(2, gap="large")
 
     with left:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         st.markdown("#### 🧠 Cognitive & Functional Profile")
 
         st.number_input(
@@ -639,10 +638,8 @@ if page == "Prediction":
             key="behavioral_problems",
         )
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with right:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         st.markdown("#### 🧬 Health & Lifestyle Profile")
 
         st.number_input(
@@ -690,7 +687,6 @@ if page == "Prediction":
             help="Input feature used by the trained model.",
         )
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
     action1, action2 = st.columns([3, 1])
 
@@ -792,77 +788,43 @@ if page == "Prediction":
         result_col, gauge_col = st.columns([1.25, .85], gap="large")
 
         with result_col:
+            st.markdown("### Latest Model Inference")
+
+            if result_text == "Diagnosis":
+                st.error(f"⚠️ **{result_text}**")
+            else:
+                st.success(f"✓ **{result_text}**")
+
+            st.caption(note)
+
+            st.markdown("**Diagnosis probability**")
             st.markdown(
-                f"""
-                <div class="result-card {result_class}">
-                    <div class="result-kicker">Latest model inference</div>
-                    <div class="result-title">{icon} {result_text}</div>
-                    <p class="result-note">{note}</p>
-
-                    <div style="height:22px"></div>
-
-                    <div class="mini-label">
-                        Diagnosis probability
-                    </div>
-
-                    <div class="probability"
-                         style="font-size:2.8rem;font-weight:800;color:#eafcff;">
-                        {probability * 100:.2f}%
-                    </div>
-
-                    <div class="meter">
-                        <div class="meter-fill"
-                             style="width:{probability * 100:.2f}%;">
-                        </div>
-                    </div>
-
-                    <div style="
-                        color:#8298ad;
-                        font-size:.76rem;
-                        margin-top:10px;
-                    ">
-                        Random Forest estimated probability for the Diagnosis class.
-                    </div>
-                </div>
-                """,
+                f'<div style="font-size:2.8rem;font-weight:800;letter-spacing:-.04em;">'
+                f'{probability * 100:.2f}%</div>',
                 unsafe_allow_html=True,
+            )
+            st.progress(float(probability))
+            st.caption(
+                "Random Forest estimated probability for the Diagnosis class."
             )
 
         with gauge_col:
-            st.markdown(
-                f"""
-                <div class="glass-card"
-                     style="min-height:100%;text-align:center;">
-                    <div class="mini-label">
-                        Probability Gauge
-                    </div>
+            st.markdown("### Probability Gauge")
 
-                    <div style="height:16px"></div>
+            # A robust native Streamlit gauge-style visualization.
+            st.progress(float(probability))
 
-                    <div class="gauge-wrap"
-                         style="--gauge-angle:{gauge_angle}deg;">
-                        <div class="gauge-content">
-                            <div class="gauge-value">
-                                {probability * 100:.1f}%
-                            </div>
-                            <div class="gauge-label">
-                                Diagnosis class
-                            </div>
-                        </div>
-                    </div>
+            gauge_col1, gauge_col2, gauge_col3 = st.columns(3)
+            with gauge_col1:
+                st.metric("0%", "Low")
+            with gauge_col2:
+                st.metric("Current", f"{probability * 100:.1f}%")
+            with gauge_col3:
+                st.metric("100%", "High")
 
-                    <div style="
-                        color:#8ea5bb;
-                        font-size:.76rem;
-                        margin-top:18px;
-                        line-height:1.5;
-                    ">
-                        Visualization of the model's estimated
-                        Diagnosis-class probability.
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
+            st.caption(
+                "Visual representation of the model's estimated "
+                "Diagnosis-class probability."
             )
 
         st.markdown("<br>", unsafe_allow_html=True)
@@ -928,8 +890,7 @@ if page == "Prediction":
                 unsafe_allow_html=True,
             )
 
-            st.markdown("</div>", unsafe_allow_html=True)
-
+    
         with history_col:
             st.markdown(
                 '<div class="glass-card">',
@@ -985,8 +946,7 @@ if page == "Prediction":
                     unsafe_allow_html=True,
                 )
 
-            st.markdown("</div>", unsafe_allow_html=True)
-
+    
         st.info(
             "This application is for educational and research purposes only. "
             "It is not a medical diagnosis or a substitute for professional medical advice."
@@ -1232,7 +1192,6 @@ elif page == "Model Information":
             hide_index=True,
         )
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with c2:
         st.markdown(
@@ -1248,7 +1207,6 @@ elif page == "Model Information":
                 unsafe_allow_html=True,
             )
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown(
         """
@@ -1348,7 +1306,6 @@ elif page == "About Project":
                 unsafe_allow_html=True,
             )
 
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with about_right:
 
