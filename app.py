@@ -35,7 +35,7 @@ model, selected_features = load_model()
 with st.sidebar:
     st.markdown('''<div class="sidebar-brand"><div class="name">🧠 AlzheimerAI</div><div class="tag">ML-powered research interface</div></div>''', unsafe_allow_html=True)
     st.markdown("### Workspace")
-    page = st.radio("Navigate", ["Prediction", "Model Information", "About Project"], label_visibility="collapsed")
+    page = st.radio("Navigate", ["Prediction", "AI Insights", "Model Information", "About Project"], label_visibility="collapsed")
     st.markdown("---")
     st.markdown(f'''<div class="glass-card" style="padding:16px;"><div class="mini-label">Deployed model</div><div class="mini-value">Random Forest</div><div style="color:#8ea5bb;font-size:.78rem;margin-top:5px;">{len(selected_features)} selected input features</div></div>''', unsafe_allow_html=True)
     st.caption("Academic • Educational • Research")
@@ -95,6 +95,40 @@ elif page == "Model Information":
         st.markdown('<div class="glass-card">', unsafe_allow_html=True); st.markdown("#### 🧩 Selected Features")
         for feature in selected_features: st.markdown(f'<span class="feature-chip">{feature}</span>', unsafe_allow_html=True)
     st.markdown(f'''<div class="glass-card"><div class="mini-label">Deployed architecture</div><div class="mini-value">Random Forest Classifier</div><div style="color:#8ea5bb;margin-top:7px;line-height:1.6">The final deployed model is loaded from <code>model/random_forest_model.pkl</code>. Test-set accuracy reported by the project: <strong style="color:#dffbff">95.12%</strong>.</div></div>''', unsafe_allow_html=True)
+
+elif page == "AI Insights":
+    st.markdown('<div class="section-title">AI Insights</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-subtitle">Explore how the deployed Random Forest model uses the selected features during classification.</div>', unsafe_allow_html=True)
+
+    c1, c2, c3 = st.columns(3)
+    cards = [
+        (c1, "Model", "Random Forest", "Deployed classifier"),
+        (c2, "Input Features", str(len(selected_features)), "Selected model features"),
+        (c3, "Test Accuracy", "95.12%", "Reported test-set accuracy"),
+    ]
+    for col, label, value, caption in cards:
+        with col:
+            st.markdown(f'<div class="metric-card"><div class="mini-label">{label}</div><div class="metric-number">{value}</div><div class="metric-caption">{caption}</div></div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown("#### 🧩 Feature Importance")
+    st.markdown("""<div style="color:#9fb0c3;line-height:1.7;margin-bottom:15px;">These values show the Random Forest model's feature importance across its trained trees. They describe model-level contribution and should not be interpreted as medical causation or as an individual clinical explanation.</div>""", unsafe_allow_html=True)
+
+    if hasattr(model, "feature_importances_"):
+        importance_df = pd.DataFrame({"Feature": selected_features, "Importance": model.feature_importances_}).sort_values("Importance", ascending=False)
+        st.bar_chart(importance_df.set_index("Feature"), use_container_width=True)
+        display_df = importance_df.copy()
+        display_df["Importance"] = (display_df["Importance"] * 100).round(2)
+        display_df = display_df.rename(columns={"Importance": "Importance (%)"})
+        st.dataframe(display_df, use_container_width=True, hide_index=True)
+    else:
+        st.warning("Feature importance is not available for the loaded model.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("""<div class="glass-card"><div class="mini-label">Inference pipeline</div><div class="mini-value">Input → Random Forest → Probability → Classification</div><div style="color:#9fb0c3;line-height:1.7;margin-top:10px;">The application collects the selected features, sends them to the deployed model, obtains the predicted class and estimated probability, and displays the result in the Prediction workspace.</div></div>""", unsafe_allow_html=True)
+
+    st.markdown("""<div class="glass-card"><div class="mini-label">Explainability note</div><div class="mini-value">Model-level insight, not medical advice</div><div style="color:#9fb0c3;line-height:1.7;margin-top:10px;">Feature importance indicates how the trained model uses variables across the dataset. It does not establish that a feature independently causes Alzheimer's disease.</div></div>""", unsafe_allow_html=True)
 
 else:
     st.markdown('<div class="section-title">Inside the Project</div>', unsafe_allow_html=True)
