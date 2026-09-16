@@ -47,23 +47,19 @@ if page == "Prediction":
     st.markdown('<div class="section-subtitle">Enter the same feature values used by the trained model, then run an inference.</div>', unsafe_allow_html=True)
     left, right = st.columns(2, gap="large")
     with left:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         st.markdown("#### 🧠 Cognitive & Functional Profile")
         functional_assessment = st.number_input("Functional Assessment", min_value=0.0, max_value=10.0, value=5.0, step=0.1, help="Input feature used by the trained model.")
         adl = st.number_input("ADL", min_value=0.0, max_value=10.0, value=6.0, step=0.1, help="Input feature used by the trained model.")
         mmse = st.number_input("MMSE", min_value=0.0, max_value=30.0, value=20.0, step=0.1, help="Input feature used by the trained model.")
         memory_complaints = st.selectbox("Memory Complaints", [0, 1], format_func=lambda x: "No (0)" if x == 0 else "Yes (1)")
         behavioral_problems = st.selectbox("Behavioral Problems", [0, 1], format_func=lambda x: "No (0)" if x == 0 else "Yes (1)")
-        st.markdown('</div>', unsafe_allow_html=True)
     with right:
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
         st.markdown("#### 🧬 Health & Lifestyle Profile")
         diet_quality = st.number_input("Diet Quality", min_value=0.0, max_value=10.0, value=7.0, step=0.1, help="Input feature used by the trained model.")
         cholesterol_triglycerides = st.number_input("Cholesterol Triglycerides", min_value=0.0, max_value=500.0, value=150.0, step=0.1, help="Input feature used by the trained model.")
         cholesterol_hdl = st.number_input("Cholesterol HDL", min_value=0.0, max_value=150.0, value=50.0, step=0.1, help="Input feature used by the trained model.")
         bmi = st.number_input("BMI", min_value=0.0, max_value=100.0, value=24.0, step=0.1, help="Input feature used by the trained model.")
         cholesterol_ldl = st.number_input("Cholesterol LDL", min_value=0.0, max_value=300.0, value=100.0, step=0.1, help="Input feature used by the trained model.")
-        st.markdown('</div>', unsafe_allow_html=True)
 
     if st.button("⚡ Run AI Inference", use_container_width=True):
         input_data = pd.DataFrame([[functional_assessment, adl, mmse, memory_complaints, behavioral_problems, diet_quality, cholesterol_triglycerides, cholesterol_hdl, bmi, cholesterol_ldl]], columns=selected_features)
@@ -98,7 +94,6 @@ elif page == "Model Information":
     with c2:
         st.markdown('<div class="glass-card">', unsafe_allow_html=True); st.markdown("#### 🧩 Selected Features")
         for feature in selected_features: st.markdown(f'<span class="feature-chip">{feature}</span>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
     st.markdown(f'''<div class="glass-card"><div class="mini-label">Deployed architecture</div><div class="mini-value">Random Forest Classifier</div><div style="color:#8ea5bb;margin-top:7px;line-height:1.6">The final deployed model is loaded from <code>model/random_forest_model.pkl</code>. Test-set accuracy reported by the project: <strong style="color:#dffbff">95.12%</strong>.</div></div>''', unsafe_allow_html=True)
 
 else:
@@ -110,7 +105,6 @@ else:
         workflow=[("01","Data Collection","Gather the project dataset."),("02","Data Inspection","Inspect structure and variables."),("03","Missing Value Analysis","Review missing-value patterns."),("04","Data Cleaning","Prepare the dataset for modeling."),("05","Exploratory Data Analysis","Explore patterns in the data."),("06","Correlation Analysis","Study feature relationships."),("07","Feature Selection","Select model input features."),("08","Train-Test Split","Separate data for evaluation."),("09","Model Building","Train classification algorithms."),("10","Model Comparison","Compare evaluation metrics."),("11","Final Model Evaluation","Evaluate the final classifier."),("12","Model Saving","Save trained model artifacts."),("13","Streamlit Deployment","Deploy the interactive application.")]
         st.markdown('<div class="glass-card"><h4>🔄 Project Workflow</h4>', unsafe_allow_html=True)
         for n,t,d in workflow: st.markdown(f'<div class="workflow-step"><div class="step-number">{n}</div><div class="step-text"><strong>{t}</strong><span>{d}</span></div></div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
     with about_right:
         st.markdown('''<div class="glass-card"><div class="mini-label">Algorithms evaluated</div><div style="margin-top:12px"><span class="feature-chip">Logistic Regression</span><span class="feature-chip">Decision Tree</span><span class="feature-chip">Random Forest</span><span class="feature-chip">K-Nearest Neighbors</span><span class="feature-chip">Support Vector Machine</span></div></div>''', unsafe_allow_html=True)
         st.markdown(f'''<div class="glass-card"><div class="mini-label">Deployment stack</div><div class="mini-value">Python + Streamlit</div><div style="color:#8ea5bb;line-height:1.7;margin-top:9px">Model artifact: <code>random_forest_model.pkl</code><br>Feature artifact: <code>selected_features.pkl</code><br>Input features: <strong style="color:#dffbff">{len(selected_features)}</strong></div></div>''', unsafe_allow_html=True)
